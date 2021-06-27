@@ -15,6 +15,7 @@
 #define SW_TIMER_51MS       51u
 #define SW_TIMER_251MS      251u
 #define SW_TIMER_1001MS     1001u
+#define SW_TIMER_5001MS     5001u
     
     
 #define EVT_SW_TIMER_2MS        (TIMER_TICK_OFFSET + SW_TIMER_2MS)
@@ -22,7 +23,7 @@
 #define EVT_SW_TIMER_51MS       (TIMER_TICK_OFFSET + SW_TIMER_51MS)
 #define EVT_SW_TIMER_251MS      (TIMER_TICK_OFFSET + SW_TIMER_251MS)
 #define EVT_SW_TIMER_1001MS     (TIMER_TICK_OFFSET + SW_TIMER_1001MS)
-    
+#define EVT_SW_TIMER_5001MS     (TIMER_TICK_OFFSET + SW_TIMER_5001MS)
     
 #ifdef CY_PROJECT_NAME
 #define EnterCritical()   CyEnterCriticalSection()

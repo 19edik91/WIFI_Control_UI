@@ -79,6 +79,16 @@
     EVT( eEvtNewRegulationValue )\
     EVT( eEvtInitRegulationValue )\
     EVT( eEvtStandby_WakeUpReceived )\
-    EVT( eEvtStandby_RxToggled )
+    EVT( eEvtStandby_RxToggled )\
+    EVT(eEvtManualInitHardware) \
+    EVT(eEvtAutoInitHardware) \
+    EVT(eEvtUserTimerReceived) \
+    
+#define USER_EVENTPARAM_LIST \
+    EVTP(eEvtParam_ManualInitSetMinValue)\
+    EVTP(eEvtParam_ManualInitSetMaxValue)\
+    EVTP(eEvtParam_ManualInitDone)\
+    EVTP(eEvtParam_AutoInitDone)\
+    EVTP(eEvtParam_AutoInitStart)\
     
 #endif /* PROJECT_CONFIG_H_ */

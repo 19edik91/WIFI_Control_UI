@@ -24,15 +24,11 @@ extern "C"
 
 
 /****************************************** ADC-Specific defines ******************************************************/
-#define ADC_MAX_VAL                 ADC_INPUT_DEFAULT_HIGH_LIMIT
-#define ADC_REF_MILLIVOLT           ADC_INPUT_DEFAULT_VREF_MV_VALUE
-#define ADC_INPUT_CHANNEL0          0
+#define ADC_MAX_VAL                 1024u   //10bit ADC resolution
+#define ADC_REF_MILLIVOLT           1000u   //1000mV reference Voltage
+#define ADC_INPUT_CHANNEL0          A0
+#define ADC_CHANNELS                1
 
-#if (AMuxSeq_CHANNELS >= ADC_INPUT_SEQUENCED_CHANNELS_NUM)
-    #define ADC_CHANNELS             AMuxSeq_CHANNELS
-#else
-    #define ADC_CHANNELS             ADC_INPUT_SEQUENCED_CHANNELS_NUM
-#endif
 
 
 

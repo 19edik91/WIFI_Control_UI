@@ -17,8 +17,10 @@ extern "C"
 {
 #endif    
   
-#include "Messages.h"
+#include "OS_Messages.h"
 
+void MessageHandler_Init(void);
+extern void MessageHandler_HandleMessage(void* pvMsg);
 void MessageHandler_HandleSerialCommEvent(void);
 void MessageHandler_SendRequestOutputStatus(u8 ucOutputIndex);
 void MessageHandler_SendHeartBeatOutput(u8 ucOutputIndex);

@@ -7,13 +7,15 @@
 \brief      Handler for the serial communication messages
 
 ***********************************************************************************/
+#include "OS_Messages.h"
+#include "OS_Serial_UART.h"
+#include "OS_ErrorDebouncer.h"
+#include "OS_Communication.h"
+
 #include "RequestResponseHandler.h"
 #include "BaseTypes.h"
 #include "MessageHandler.h"
-#include "Messages.h"
-#include "SerialC.h"
-#include "ErrorDebouncer.h"
-#include "HelperFunctions.h"
+
 #include "Aom.h"
 
 //#include "Version\Version.h"
@@ -42,10 +44,10 @@ static void SendUserSettingsDone(void)
     sMsgFrame.sHeader.ucMsgType = eTypeRequest;
 
     /* Fill header and checksum */
-    HF_CreateMessageFrame(&sMsgFrame);
+    OS_Communication_CreateMessageFrame(&sMsgFrame);
     
     /* Start to send the packet */
-    HF_SendMessage(&sMsgFrame);
+    OS_Communication_SendMessage(&sMsgFrame);
 }
 
 /****************************************** External visible functiones **********************************/
@@ -74,7 +76,7 @@ teMessageType ReqResMsg_Handler(tsMessageFrame* psMsgFrame)
     if(Aom_IsStandbyActive())
     {
         /* Message should only occur when when standby is left. Therfore request exit standby */
-        EVT_PostEvent(eEvtStandby, eEvtParam_ExitStandby, 0);
+        OS_EVT_PostEvent(eEvtStandby, eEvtParam_ExitStandby, 0);
     }
 
     /* Switch to message ID */
@@ -83,7 +85,7 @@ teMessageType ReqResMsg_Handler(tsMessageFrame* psMsgFrame)
         case eMsgWakeUp:
         {
             /* Stop standby timeout when its counting */
-            EVT_PostEvent(eEvtStandby, eEvtParam_ExitStandby, 0);                
+            OS_EVT_PostEvent(eEvtStandby, eEvtParam_ExitStandby, 0);                
             break;
         }
         
@@ -93,13 +95,13 @@ teMessageType ReqResMsg_Handler(tsMessageFrame* psMsgFrame)
             //TODO: cant get currently the amount of clients
             //      allow always to get into sleep mode
             //Serial_Print("MsgSleep"); 
-            EVT_PostEvent(eEvtStandby, eEvtParam_EnterStandby, 0);    
+            OS_EVT_PostEvent(eEvtStandby, eEvtParam_EnterStandby, 0);    
             break;
         }
 
         case eMsgAutoInitHardware:
         {
-            EVT_PostEvent(eEvtAutoInitHardware, eEvtParam_AutoInitDone, 0);
+            OS_EVT_PostEvent(eEvtAutoInitHardware, eEvtParam_AutoInitDone, 0);
             break;
         }
 
@@ -120,7 +122,7 @@ teMessageType ReqResMsg_Handler(tsMessageFrame* psMsgFrame)
             memcpy(&ulTimeParam2, &ucTimeArray[0], sizeof(ucTimeArray));
 
             /* Post timer values for event handler */
-            EVT_PostEvent(eEvtUserTimerReceived, psMsgUserTimer->b7TimerIdx, ulTimeParam2);
+            OS_EVT_PostEvent(eEvtUserTimerReceived, psMsgUserTimer->b7TimerIdx, ulTimeParam2);
 
             Aom_SettingsMsgReceived(true, false, 0);
             break; 

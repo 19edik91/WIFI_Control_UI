@@ -19,8 +19,7 @@
 
 #include "Aom.h"
 #include "MessageHandler.h"
-#include "EventManager.h"
-#include "Standby.h"
+#include "OS_EventManager.h"
 #include "WifiServerLocal_InitPage.h"
 
 /***************************** defines / macros ******************************/
@@ -163,7 +162,7 @@ static void WebSocketHandler(u8 ucNum, WStype_t eWsType, u8* pucPayload, size_t 
                         bAutoInitProgress = ON;
                         
                         /* Post event */
-                        EVT_PostEvent(eEvtAutoInitHardware, eEvtParam_AutoInitStart, 0);        
+                        OS_EVT_PostEvent(eEvtAutoInitHardware, eEvtParam_AutoInitStart, 0);        
                     }
                 }
                 else if(szButton == "AIOFF")
@@ -188,7 +187,7 @@ static void WebSocketHandler(u8 ucNum, WStype_t eWsType, u8* pucPayload, size_t 
                         bManualInitProgress = OFF;
 
                         /* Post event */
-                        EVT_PostEvent(eEvtManualInitHardware, eEvtParam_ManualInitDone, 0);             
+                        OS_EVT_PostEvent(eEvtManualInitHardware, eEvtParam_ManualInitDone, 0);             
                     }
                 }
                 else if(szButton == "Prev")
@@ -219,7 +218,7 @@ static void WebSocketHandler(u8 ucNum, WStype_t eWsType, u8* pucPayload, size_t 
                             psOutputVal->sBrightnessValue[ucInitOutputIndex].ucMinValue = psOutputVal->sBrightnessValue[ucInitOutputIndex].ucSliderValue;
                             
                             /* Post event */
-                            EVT_PostEvent(eEvtManualInitHardware, eEvtParam_ManualInitSetMinValue, ucInitOutputIndex); 
+                            OS_EVT_PostEvent(eEvtManualInitHardware, eEvtParam_ManualInitSetMinValue, ucInitOutputIndex); 
                         }
                     }
                 }
@@ -235,7 +234,7 @@ static void WebSocketHandler(u8 ucNum, WStype_t eWsType, u8* pucPayload, size_t 
                             psOutputVal->sBrightnessValue[ucInitOutputIndex].ucMaxValue = psOutputVal->sBrightnessValue[ucInitOutputIndex].ucSliderValue; 
 
                             /* Post event */
-                            EVT_PostEvent(eEvtManualInitHardware, eEvtParam_ManualInitSetMaxValue, ucInitOutputIndex); 
+                            OS_EVT_PostEvent(eEvtManualInitHardware, eEvtParam_ManualInitSetMaxValue, ucInitOutputIndex); 
                         }
                     }
                 }

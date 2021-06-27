@@ -16,7 +16,7 @@ extern "C"
 {
 #endif    
   
-#include "Messages.h"
+#include "OS_Messages.h"
 teMessageType ResDeniedMsg_Handler(tsMessageFrame* psMsgFrame);
 
 #ifdef __cplusplus

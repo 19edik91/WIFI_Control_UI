@@ -9,10 +9,10 @@
 ***********************************************************************************/
 #include "BaseTypes.h"
 #include "MessageHandler.h"
-#include "Messages.h"
-#include "SerialC.h"
-#include "ErrorDebouncer.h"
-#include "HelperFunctions.h"
+#include "OS_Messages.h"
+#include "OS_Serial_UART.h"
+#include "OS_ErrorDebouncer.h"
+#include "OS_Communication.h"
 #include "RequestResponseHandler.h"
 #include "ResponseDeniedHandler.h"
 #include "Aom.h"
@@ -34,19 +34,21 @@
 \param      pMessage - pointer to message
 \param      ucSize   - sizeof whole message
 ***********************************************************************************/
-static void HandleMessage(tsMessageFrame* psMsgFrame)
+void MessageHandler_HandleMessage(void* pvMsg)
 {
-    bool bValidMessage = true;
+    tsMessageFrame* psMsgFrame = (tsMessageFrame*)pvMsg;
+    
+    bool bValidMessage = true;    
     static u8 ucInvalidMessageCounter = 0;    
 
     /* Get payload */    
-    const teMessageId eMessageId = HF_GetObject(psMsgFrame);
-    const teMessageType eMsgType = HF_GetMessageType(psMsgFrame);
+    const teMessageId eMessageId = OS_Communication_GetObject(psMsgFrame);
+    const teMessageType eMsgType = OS_Communication_GetMessageType(psMsgFrame);
     
     teMessageType eResponse = eNoType;
     
     /* Check for valid message address */
-    if(HF_ValidateMessageAddresses(psMsgFrame))
+    if(OS_Communication_ValidateMessageAddresses(psMsgFrame))
     {    
         /* Check if the message is a response or a request */
         switch(eMsgType)
@@ -54,7 +56,7 @@ static void HandleMessage(tsMessageFrame* psMsgFrame)
             case eTypeAck:
             {
                 //Clear message from buffer
-                HF_ResponseReceived(psMsgFrame);
+                OS_Communication_ResponseReceived(psMsgFrame);
                 break;
             }
             
@@ -89,7 +91,7 @@ static void HandleMessage(tsMessageFrame* psMsgFrame)
     /* Send response message */
     if(eResponse != eNoType)
     {
-        HF_SendResponseMessage(eMessageId, eResponse);
+        OS_Communication_SendResponseMessage(eMessageId, eResponse);
     }
 
     /* Check for invalid messages */
@@ -102,7 +104,7 @@ static void HandleMessage(tsMessageFrame* psMsgFrame)
         if(++ucInvalidMessageCounter > INVALID_MESSAGES_MAX)
         {
             ucInvalidMessageCounter = INVALID_MESSAGES_MAX;
-            ErrorDebouncer_PutErrorInQueue(eCommunicationFault);
+            OS_ErrorDebouncer_PutErrorInQueue(eCommunicationFault);
         }
     }     
     return;
@@ -558,4 +560,17 @@ void MessageHandler_SendStillAliveMessage(bool bRequest)
 
     /* Start to send the packet */
     HF_SendMessage(&sMsgFrame);
+}
+
+//********************************************************************************
+/*!
+\author     Kraemer E
+\date       05.05.2021
+\fn         MessageHandler_Init
+\brief      Links the message handler function with the OS-Communication module
+\return     void 
+***********************************************************************************/
+void MessageHandler_Init(void)
+{    
+    OS_Communication_Init(MessageHandler_HandleMessage);
 }

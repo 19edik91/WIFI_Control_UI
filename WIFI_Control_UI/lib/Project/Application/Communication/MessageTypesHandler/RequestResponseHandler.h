@@ -18,7 +18,7 @@ extern "C"
 {
 #endif    
 
-#include <Messages.h>
+#include "OS_Messages.h"
   
 teMessageType ReqResMsg_Handler(tsMessageFrame* psMsgFrame);
 

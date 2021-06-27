@@ -18,8 +18,7 @@
 
 #include "Aom.h"
 #include "MessageHandler.h"
-#include "EventManager.h"
-#include "Standby.h"
+#include "OS_EventManager.h"
 #include "WifiServerLocal_RootPage.h"
 
 /***************************** defines / macros ******************************/

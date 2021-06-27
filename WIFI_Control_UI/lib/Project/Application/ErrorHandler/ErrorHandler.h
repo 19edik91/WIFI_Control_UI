@@ -3,13 +3,13 @@
 #ifndef ERRORHANDLER_H_
 #define ERRORHANDLER_H_
 
-#include "Faults.h"
-#include "Aom.h"
+#include "OS_Faults.h"
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
+
 /********************************* includes **********************************/
 
 
@@ -28,9 +28,7 @@ typedef struct
 
 
 /************************ externally visible functions ***********************/
-void ErrorHandler_HandleActualError(u8 eFaultCode, bool bSetError);
-bool ErrorHandler_SendErrorMessage(void);
-
+bool ErrorHandler_HandleActualError(u8 eFaultCode, bool bSetError);
 
 #ifdef __cplusplus
 }

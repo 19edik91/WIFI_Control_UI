@@ -18,8 +18,7 @@
 
 #include "Aom.h"
 #include "MessageHandler.h"
-#include "EventManager.h"
-#include "Standby.h"
+#include "OS_EventManager.h"
 #include "WifiServerLocal_AutomaticPage.h"
 #include "WifiServerLocal_InitPage.h"
 #include "WifiServerLocal_RootPage.h"
@@ -299,7 +298,7 @@ void WifiServerLocal_Handler(void)
             if(Aom_IsStandbyActive())
             {
                 //MessageHandler_SendSleepOrWakeUpMessage(false);
-                EVT_PostEvent(eEvtStandby, eEvtParam_ExitStandby, 0);
+                OS_EVT_PostEvent(eEvtStandby, eEvtParam_ExitStandby, 0);
             }
 
             
