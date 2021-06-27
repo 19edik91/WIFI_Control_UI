@@ -19,11 +19,7 @@ extern "C"
 #endif   
 
 #include "BaseTypes.h"
-
-#define PERCENT_LOW        5      //5% is lowest value 
-#define PERCENT_HIGH       100    //100% is highest value
-#define TIMER_AMOUNT       10
-#define DRIVE_OUTPUTS       3
+#include "Project_Config.h"
 
 typedef struct
 {
@@ -63,10 +59,10 @@ typedef struct
 
 typedef struct
 {
-    tsTime sStartHour[TIMER_AMOUNT];
-    tsTime sStartMin[TIMER_AMOUNT];
-    tsTime sStopHour[TIMER_AMOUNT];
-    tsTime sStopMin[TIMER_AMOUNT];
+    tsTime sStartHour[USER_TIMER_AMOUNT];
+    tsTime sStartMin[USER_TIMER_AMOUNT];
+    tsTime sStopHour[USER_TIMER_AMOUNT];
+    tsTime sStopMin[USER_TIMER_AMOUNT];
     u8 ucTimerIndex;
     u8 ucTimerAmountSet; //Bitwise set 
     u8 ucEndurance; //Leuchtdauer
