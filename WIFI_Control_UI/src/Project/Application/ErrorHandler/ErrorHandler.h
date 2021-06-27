@@ -17,12 +17,6 @@ extern "C"
 
 
 /****************************** type definitions *****************************/
-typedef struct
-{
-    u8 eFaultCode;
-    u8 ucSendTimeout;
-    bool bHandlingOnLV;
-}tSendErrorDelay;
 
 /***************************** global variables ******************************/
 
