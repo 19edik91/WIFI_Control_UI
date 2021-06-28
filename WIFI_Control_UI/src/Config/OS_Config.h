@@ -25,14 +25,6 @@
 #define EVT_SW_TIMER_1001MS     (TIMER_TICK_OFFSET + SW_TIMER_1001MS)
 #define EVT_SW_TIMER_5001MS     (TIMER_TICK_OFFSET + SW_TIMER_5001MS)
     
-#ifdef CY_PROJECT_NAME
-#define EnterCritical()   CyEnterCriticalSection()
-#define LeaveCritical(x)  CyExitCriticalSection(x)
-#else
-#define EnterCritical()   3; noInterrupts()
-#define LeaveCritical(x)  interrupts()
-#endif
-    
 //#define TMGR_PostEvent(param1,param2) EVT_PostEvent(eEvtTimer,(uiEventParam1)param1,(ulEventParam2)param2)
 
 #endif /* OS_CONFIG_H_ */
