@@ -22,7 +22,6 @@
 /************************* local function prototypes *************************/
 
 /************************* local data (const and var) ************************/
-static u8 ucActiveOutputs = 0;
 static bool bModulesInit = false;
 
 static u8 ucSW_Timer_10ms = INVALID_TIMER_INDEX;

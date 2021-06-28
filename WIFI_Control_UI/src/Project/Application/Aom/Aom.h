@@ -106,7 +106,7 @@ void Aom_SetSavedUserSettings(u8 ucOutputIndex, u8 ucBrightness, bool bOnOff, bo
 void Aom_SettingsMsgReceived(bool bTimerSettings, bool bOutputSettings, u8 ucOutputIdx);
 bool Aom_GetSettingsMsgReceived(void);
 void Aom_SetSettingsInitDone(void);
-bool Aom_IsStandbyActive(void);
+//bool Aom_IsStandbyActive(void);
 void Aom_SetActualTime(u8 ucHours, u8 ucMinutes, u32 ulLocTicks);
 void Aom_GetActualTime(u8* pucHours, u8* pucMinutes, u32* pulLocTicks);
 void Aom_SetDate(tsDate* psDate);

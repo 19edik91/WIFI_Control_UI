@@ -69,15 +69,15 @@ static void SendUserSettingsDone(void)
 teMessageType ReqResMsg_Handler(tsMessageFrame* psMsgFrame)
 {
     /* Get payload */    
-    const teMessageId eMessageId = HF_GetObject(psMsgFrame);   
+    const teMessageId eMessageId = OS_Communication_GetObject(psMsgFrame);   
     teMessageType eResponse = eTypeAck;
     
     /* Check if standby is active */
-    if(Aom_IsStandbyActive())
-    {
+    //if(Aom_IsStandbyActive())
+    //{
         /* Message should only occur when when standby is left. Therfore request exit standby */
-        OS_EVT_PostEvent(eEvtStandby, eEvtParam_ExitStandby, 0);
-    }
+    //    OS_EVT_PostEvent(eEvtStandby, eEvtParam_ExitStandby, 0);
+    //}
 
     /* Switch to message ID */
     switch(eMessageId)

@@ -141,10 +141,10 @@ void MessageHandler_SendFaultMessage(const u16 uiErrorCode)
     memcpy(&sMsgFrame.sPayload.ucData[0], &sMsgFault, sizeof(sMsgFault));
 
     /* Fill header and checksum */
-    HF_CreateMessageFrame(&sMsgFrame);
+    OS_Communication_CreateMessageFrame(&sMsgFrame);
 
     /* Start to send the packet */
-    HF_SendMessage(&sMsgFrame);
+    OS_Communication_SendMessage(&sMsgFrame);
 }
 
 
@@ -176,7 +176,7 @@ void MessageHandler_SendRequestOutputStatus(u8 ucOutputIndex)
 
 
         /* Get output status values */
-        tRegulationValues* psRegValues = Aom_GetCustomValue();
+        const tRegulationValues* psRegValues = Aom_GetCustomValue();
 
         /* Put the values into the message */
         sMsgOutput.b7Brightness = psRegValues->sLedValue[ucOutputIndex].ucPercentValue;
@@ -193,10 +193,10 @@ void MessageHandler_SendRequestOutputStatus(u8 ucOutputIndex)
         memcpy(&sMsgFrame.sPayload.ucData[0], &sMsgOutput, sizeof(sMsgOutput));
 
         /* Fill header and checksum */
-        HF_CreateMessageFrame(&sMsgFrame);
+        OS_Communication_CreateMessageFrame(&sMsgFrame);
 
         /* Start to send the packet */
-        HF_SendMessage(&sMsgFrame);
+        OS_Communication_SendMessage(&sMsgFrame);
     }
 }
 
@@ -238,10 +238,10 @@ void MessageHandler_SendHeartBeatOutput(u8 ucOutputIndex)
         memcpy(&sMsgFrame.sPayload.ucData[0], &sMsgHeartBeatOutput, sizeof(tMsgHeartBeatOutput));
 
         /* Fill header and checksum */
-        HF_CreateMessageFrame(&sMsgFrame);
+        OS_Communication_CreateMessageFrame(&sMsgFrame);
 
         /* Start to send the packet */
-        HF_SendMessage(&sMsgFrame);
+        OS_Communication_SendMessage(&sMsgFrame);
     }
 }
 
@@ -265,24 +265,24 @@ void MessageHandler_HandleSerialCommEvent(void)
     memset(&ucRxBuffer[0], 0, ucRxCount);
     
     /* Get message from the buffer */
-    if(Serial_GetPacket(&ucRxBuffer[0], &ucRxCount))
+    if(OS_Serial_UART_GetPacket(&ucRxBuffer[0], &ucRxCount))
     {
         /* Get the whole message first and cast it into the message frame */
         tsMessageFrame* psMsgFrame = (tsMessageFrame*)ucRxBuffer;
                 
         /* Calculate the CRC for this message */
-        ulCalcCrc32 = HF_CreateMessageCrc(&ucRxBuffer[0], HF_GetMessageSizeWithoutCrc(psMsgFrame));
+        ulCalcCrc32 = OS_Communication_CreateMessageCrc(&ucRxBuffer[0], OS_Communication_GetMessageSizeWithoutCrc(psMsgFrame));
         
         /* Check for correct CRC */
         if(psMsgFrame->ulCrc32 == ulCalcCrc32)
         {        
             /* Handle message */
-            HandleMessage(psMsgFrame);
+            MessageHandler_HandleMessage(psMsgFrame);
         }
         else
         {           
             /* Put into error queue */
-            ErrorDebouncer_PutErrorInQueue(eMessageCrcFault);
+            OS_ErrorDebouncer_PutErrorInQueue(eMessageCrcFault);
         }
     }
 }
@@ -309,10 +309,10 @@ void MessageHandler_SendSleepOrWakeUpMessage(bool bSleep)
     sMsgFrame.sHeader.ucMsgType = eTypeRequest;
 
     /* Fill header and checksum */
-    HF_CreateMessageFrame(&sMsgFrame);
+    OS_Communication_CreateMessageFrame(&sMsgFrame);
 
     /* Start to send the packet */
-    HF_SendMessage(&sMsgFrame);
+    OS_Communication_SendMessage(&sMsgFrame);
 }
 
 
@@ -349,10 +349,10 @@ void MessageHandler_SendManualInitValue(bool bMaxValue, bool bMinValue, u8 ucOut
     memcpy(&sMsgFrame.sPayload.ucData[0], &sMsgManualInit, sizeof(sMsgManualInit));
 
     /* Fill header and checksum */
-    HF_CreateMessageFrame(&sMsgFrame);
+    OS_Communication_CreateMessageFrame(&sMsgFrame);
 
     /* Start to send the packet */
-    HF_SendMessage(&sMsgFrame);
+    OS_Communication_SendMessage(&sMsgFrame);
 }
 
 //********************************************************************************
@@ -378,10 +378,10 @@ void MessageHandler_SendAutoInitValue(void)
     sMsgFrame.sHeader.ucMsgType = eTypeRequest;
 
     /* Fill header and checksum */
-    HF_CreateMessageFrame(&sMsgFrame);
+    OS_Communication_CreateMessageFrame(&sMsgFrame);
 
     /* Start to send the packet */
-    HF_SendMessage(&sMsgFrame);
+    OS_Communication_SendMessage(&sMsgFrame);
 }
 
 //********************************************************************************
@@ -407,10 +407,10 @@ void MessageHandler_SendManualInitDone(void)
     sMsgFrame.sHeader.ucMsgType = eTypeRequest;
 
     /* Fill header and checksum */
-    HF_CreateMessageFrame(&sMsgFrame);
+    OS_Communication_CreateMessageFrame(&sMsgFrame);
 
     /* Start to send the packet */
-    HF_SendMessage(&sMsgFrame);
+    OS_Communication_SendMessage(&sMsgFrame);
 }
 
 //********************************************************************************
@@ -436,10 +436,10 @@ void MessageHandler_SendSystemStarted(void)
     sMsgFrame.sHeader.ucMsgType = eTypeRequest;
 
     /* Fill header and checksum */
-    HF_CreateMessageFrame(&sMsgFrame);
+    OS_Communication_CreateMessageFrame(&sMsgFrame);
 
     /* Start to send the packet */
-    HF_SendMessage(&sMsgFrame);
+    OS_Communication_SendMessage(&sMsgFrame);
 }
 
 //********************************************************************************
@@ -475,10 +475,10 @@ void MessageHandler_SendNewUserTimerValues(u8 ucStartH, u8 ucStopH, u8 ucStartM,
     memcpy(&sMsgFrame.sPayload.ucData[0], &sMsgUserTimer, sizeof(sMsgUserTimer));
 
     /* Fill header and checksum */
-    HF_CreateMessageFrame(&sMsgFrame);
+    OS_Communication_CreateMessageFrame(&sMsgFrame);
 
     /* Start to send the packet */
-    HF_SendMessage(&sMsgFrame);
+    OS_Communication_SendMessage(&sMsgFrame);
 }
 
 //********************************************************************************
@@ -520,10 +520,10 @@ void MessageHandler_SendActualTime(void)
     memcpy(&sMsgFrame.sPayload.ucData[0], &sMsgTime, sizeof(tMsgCurrentTime));
 
     /* Fill header and checksum */
-    HF_CreateMessageFrame(&sMsgFrame);
+    OS_Communication_CreateMessageFrame(&sMsgFrame);
 
     /* Start to send the packet */
-    HF_SendMessage(&sMsgFrame);
+    OS_Communication_SendMessage(&sMsgFrame);
 }
 
 //********************************************************************************
@@ -556,10 +556,10 @@ void MessageHandler_SendStillAliveMessage(bool bRequest)
     memcpy(&sMsgFrame.sPayload.ucData[0], &sMsgStillAlive, sizeof(tMsgStillAlive));
     
     /* Fill header and checksum */
-    HF_CreateMessageFrame(&sMsgFrame);
+    OS_Communication_CreateMessageFrame(&sMsgFrame);
 
     /* Start to send the packet */
-    HF_SendMessage(&sMsgFrame);
+    OS_Communication_SendMessage(&sMsgFrame);
 }
 
 //********************************************************************************
