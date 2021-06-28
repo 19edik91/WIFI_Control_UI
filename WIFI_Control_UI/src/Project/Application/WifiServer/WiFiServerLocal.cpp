@@ -295,11 +295,11 @@ void WifiServerLocal_Handler(void)
         if(bValueChanged || ucValueChanged != 0xFF)
         {                   
             /* When the system is in standby mode. Send a wake-up message to UIM*/
-            if(Aom_IsStandbyActive())
-            {
+            //if(Aom_IsStandbyActive())
+            //{
                 //MessageHandler_SendSleepOrWakeUpMessage(false);
-                OS_EVT_PostEvent(eEvtStandby, eEvtParam_ExitStandby, 0);
-            }
+            //    OS_EVT_PostEvent(eEvtStandby, eEvtParam_ExitStandby, 0);
+            //}
 
             
             /* Send message with new values to system master */
