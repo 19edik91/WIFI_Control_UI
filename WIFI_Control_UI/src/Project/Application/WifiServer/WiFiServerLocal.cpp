@@ -230,7 +230,7 @@ void WifiServerLocal_Init(void)
     #else
     WiFi.hostname("Julius-Lampe");
     IPAddress ucLocIP = WiFi.localIP();
-    IPAddress ip(ucLocIP[0], ucLocIP[1], ucLocIP[2], 40);
+    IPAddress ip(ucLocIP[0], ucLocIP[1], ucLocIP[2], 41);
     WiFi.config(ip, WiFi.gatewayIP(), WiFi.subnetMask(), WiFi.dnsIP());
     #endif
 

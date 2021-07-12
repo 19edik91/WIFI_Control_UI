@@ -91,7 +91,7 @@ void MessageHandler_HandleMessage(void* pvMsg)
     /* Send response message */
     if(eResponse != eNoType)
     {
-        OS_Communication_SendResponseMessage(eMessageId, eResponse);
+        OS_Communication_SendAcknowledge(eMessageId, psMsgFrame->sPayload.ucQueryID, eResponse);
     }
 
     /* Check for invalid messages */
@@ -124,27 +124,16 @@ void MessageHandler_HandleMessage(void* pvMsg)
 void MessageHandler_SendFaultMessage(const u16 uiErrorCode)
 {
     /* Create structure */
-    tsMessageFrame sMsgFrame;  
     tMsgFaultMessage sMsgFault;
 
     /* Clear the structures */
-    memset(&sMsgFrame, 0, sizeof(sMsgFrame));
     memset(&sMsgFault, 0, sizeof(sMsgFault));
 
     /* Fill them */
-    sMsgFrame.sPayload.ucCommand = eCmdSet;
-    sMsgFrame.sPayload.ucMsgId = eMsgErrorCode;
     sMsgFault.uiErrorCode = uiErrorCode;
-    sMsgFrame.sHeader.ucMsgType = eTypeRequest;
-
-    //    sMsgVersion.uiCrc = (u16)SelfTest_FlashCRCRead(ST_FLASH_SEGIDX_S1);
-    memcpy(&sMsgFrame.sPayload.ucData[0], &sMsgFault, sizeof(sMsgFault));
-
-    /* Fill header and checksum */
-    OS_Communication_CreateMessageFrame(&sMsgFrame);
 
     /* Start to send the packet */
-    OS_Communication_SendMessage(&sMsgFrame);
+    OS_Communication_SendRequestMessage(eMsgErrorCode, &sMsgFault, sizeof(tMsgFaultMessage), eCmdSet);
 }
 
 
@@ -162,18 +151,10 @@ void MessageHandler_SendRequestOutputStatus(u8 ucOutputIndex)
     if(Aom_SettingsInitDone())
     {  
         /* Create structure */
-        tsMessageFrame sMsgFrame;  
         tMsgRequestOutputState sMsgOutput;
 
         /* Clear the structures */
-        memset(&sMsgFrame, 0, sizeof(sMsgFrame));
         memset(&sMsgOutput, 0, sizeof(sMsgOutput));
-
-        /* Fill them */
-        sMsgFrame.sPayload.ucCommand = eCmdSet;
-        sMsgFrame.sPayload.ucMsgId = eMsgRequestOutputStatus;
-        sMsgFrame.sHeader.ucMsgType = eTypeRequest;
-
 
         /* Get output status values */
         const tRegulationValues* psRegValues = Aom_GetCustomValue();
@@ -189,14 +170,8 @@ void MessageHandler_SendRequestOutputStatus(u8 ucOutputIndex)
         sMsgOutput.ucBurnTime = psRegValues->ucBurnTime;
         sMsgOutput.b3OutputIndex = ucOutputIndex;
 
-        /* Save the message in frame */
-        memcpy(&sMsgFrame.sPayload.ucData[0], &sMsgOutput, sizeof(sMsgOutput));
-
-        /* Fill header and checksum */
-        OS_Communication_CreateMessageFrame(&sMsgFrame);
-
         /* Start to send the packet */
-        OS_Communication_SendMessage(&sMsgFrame);
+        OS_Communication_SendRequestMessage(eMsgRequestOutputStatus, &sMsgOutput, sizeof(tMsgRequestOutputState), eCmdSet);
     }
 }
 
@@ -214,17 +189,10 @@ void MessageHandler_SendHeartBeatOutput(u8 ucOutputIndex)
     if(Aom_SettingsInitDone())
     {  
         /* Create structure */
-        tsMessageFrame sMsgFrame;  
         tMsgHeartBeatOutput sMsgHeartBeatOutput;
 
         /* Clear the structures */
-        memset(&sMsgFrame, 0, sizeof(tsMessageFrame));
         memset(&sMsgHeartBeatOutput, 0, sizeof(tMsgHeartBeatOutput));
-
-        /* Fill them */
-        sMsgFrame.sPayload.ucCommand = eCmdSet;
-        sMsgFrame.sPayload.ucMsgId = eMsgHeartBeatOutput;
-        sMsgFrame.sHeader.ucMsgType = eTypeRequest;
 
         /* Get output status values */
         const tRegulationValues* psRegValues = Aom_GetCustomValue();
@@ -234,58 +202,11 @@ void MessageHandler_SendHeartBeatOutput(u8 ucOutputIndex)
         sMsgHeartBeatOutput.ucLedStatus = psRegValues->sLedValue[ucOutputIndex].bStatus;
         sMsgHeartBeatOutput.ucOutputIndex = ucOutputIndex;
 
-        /* Save the message in frame */
-        memcpy(&sMsgFrame.sPayload.ucData[0], &sMsgHeartBeatOutput, sizeof(tMsgHeartBeatOutput));
-
-        /* Fill header and checksum */
-        OS_Communication_CreateMessageFrame(&sMsgFrame);
-
         /* Start to send the packet */
-        OS_Communication_SendMessage(&sMsgFrame);
+        OS_Communication_SendRequestMessage(eMsgHeartBeatOutput, &sMsgHeartBeatOutput, sizeof(tMsgHeartBeatOutput), eNoCmd);
     }
 }
 
-//********************************************************************************
-/*!
-\author     Kraemer E
-\date       30.01.2019
-\brief      Is called whenever an message was received. Used by the Event-Handler
-\return     void 
-***********************************************************************************/
-void MessageHandler_HandleSerialCommEvent(void)
-{
-    //Buffer is bigger than message frame because a fault could lead to a
-    //bigger message size and with this also to an error.
-//    u8  ucRxBuffer[sizeof(tsMessageFrame)+sizeof(u32)];
-    u8 ucRxBuffer[50];
-    u8  ucRxCount = sizeof(ucRxBuffer);
-    u32 ulCalcCrc32 = INITIAL_CRC_VALUE;    
-    
-    /* Clear buffer first */
-    memset(&ucRxBuffer[0], 0, ucRxCount);
-    
-    /* Get message from the buffer */
-    if(OS_Serial_UART_GetPacket(&ucRxBuffer[0], &ucRxCount))
-    {
-        /* Get the whole message first and cast it into the message frame */
-        tsMessageFrame* psMsgFrame = (tsMessageFrame*)ucRxBuffer;
-                
-        /* Calculate the CRC for this message */
-        ulCalcCrc32 = OS_Communication_CreateMessageCrc(&ucRxBuffer[0], OS_Communication_GetMessageSizeWithoutCrc(psMsgFrame));
-        
-        /* Check for correct CRC */
-        if(psMsgFrame->ulCrc32 == ulCalcCrc32)
-        {        
-            /* Handle message */
-            MessageHandler_HandleMessage(psMsgFrame);
-        }
-        else
-        {           
-            /* Put into error queue */
-            OS_ErrorDebouncer_PutErrorInQueue(eMessageCrcFault);
-        }
-    }
-}
 
 //********************************************************************************
 /*!
@@ -297,22 +218,9 @@ void MessageHandler_HandleSerialCommEvent(void)
 ***********************************************************************************/
 void MessageHandler_SendSleepOrWakeUpMessage(bool bSleep)
 {
-    /* Create structure */
-    tsMessageFrame sMsgFrame;  
-
-    /* Clear the structures */
-    memset(&sMsgFrame, 0, sizeof(sMsgFrame));
-
-    /* Fill them */
-    sMsgFrame.sPayload.ucCommand = eCmdSet;
-    sMsgFrame.sPayload.ucMsgId = bSleep ? eMsgSleep : eMsgWakeUp;
-    sMsgFrame.sHeader.ucMsgType = eTypeRequest;
-
-    /* Fill header and checksum */
-    OS_Communication_CreateMessageFrame(&sMsgFrame);
-
     /* Start to send the packet */
-    OS_Communication_SendMessage(&sMsgFrame);
+    teMessageId eMsgID = bSleep ? eMsgSleep : eMsgWakeUp;
+    OS_Communication_SendRequestMessage(eMsgID, NULL, 0, eCmdSet);
 }
 
 
@@ -329,30 +237,17 @@ void MessageHandler_SendSleepOrWakeUpMessage(bool bSleep)
 void MessageHandler_SendManualInitValue(bool bMaxValue, bool bMinValue, u8 ucOutputIdx)
 {
     /* Create structure */
-    tsMessageFrame sMsgFrame;  
     tMsgManualInit sMsgManualInit;
     
     /* Clear the structures */
-    memset(&sMsgFrame, 0, sizeof(sMsgFrame));
     memset(&sMsgManualInit, 0, sizeof(sMsgManualInit));
-
-    /* Fill them */
-    sMsgFrame.sPayload.ucCommand = eCmdSet;
-    sMsgFrame.sPayload.ucMsgId = eMsgManualInitHardware;
-    sMsgFrame.sHeader.ucMsgType = eTypeRequest;
 
     sMsgManualInit.bSetMinValue = bMinValue;
     sMsgManualInit.bSetMaxValue = bMaxValue;
     sMsgManualInit.ucOutputIndex = ucOutputIdx;
 
-    /* Save the message in frame */
-    memcpy(&sMsgFrame.sPayload.ucData[0], &sMsgManualInit, sizeof(sMsgManualInit));
-
-    /* Fill header and checksum */
-    OS_Communication_CreateMessageFrame(&sMsgFrame);
-
     /* Start to send the packet */
-    OS_Communication_SendMessage(&sMsgFrame);
+    OS_Communication_SendRequestMessage(eMsgManualInitHardware, &sMsgManualInit, sizeof(tMsgManualInit), eCmdSet);
 }
 
 //********************************************************************************
@@ -366,22 +261,8 @@ void MessageHandler_SendManualInitValue(bool bMaxValue, bool bMinValue, u8 ucOut
 ***********************************************************************************/
 void MessageHandler_SendAutoInitValue(void)
 {
-    /* Create structure */
-    tsMessageFrame sMsgFrame;  
-    
-    /* Clear the structures */
-    memset(&sMsgFrame, 0, sizeof(sMsgFrame));
-
-    /* Fill them */
-    sMsgFrame.sPayload.ucCommand = eCmdSet;
-    sMsgFrame.sPayload.ucMsgId = eMsgAutoInitHardware;
-    sMsgFrame.sHeader.ucMsgType = eTypeRequest;
-
-    /* Fill header and checksum */
-    OS_Communication_CreateMessageFrame(&sMsgFrame);
-
     /* Start to send the packet */
-    OS_Communication_SendMessage(&sMsgFrame);
+    OS_Communication_SendRequestMessage(eMsgAutoInitHardware, NULL, 0, eCmdSet);
 }
 
 //********************************************************************************
@@ -395,22 +276,8 @@ void MessageHandler_SendAutoInitValue(void)
 ***********************************************************************************/
 void MessageHandler_SendManualInitDone(void)
 {
-    /* Create structure */
-    tsMessageFrame sMsgFrame;  
-    
-    /* Clear the structures */
-    memset(&sMsgFrame, 0, sizeof(sMsgFrame));
-
-    /* Fill them */
-    sMsgFrame.sPayload.ucCommand = eCmdSet;
-    sMsgFrame.sPayload.ucMsgId = eMsgManualInitHwDone;
-    sMsgFrame.sHeader.ucMsgType = eTypeRequest;
-
-    /* Fill header and checksum */
-    OS_Communication_CreateMessageFrame(&sMsgFrame);
-
     /* Start to send the packet */
-    OS_Communication_SendMessage(&sMsgFrame);
+    OS_Communication_SendRequestMessage(eMsgManualInitHwDone, NULL, 0, eCmdSet);
 }
 
 //********************************************************************************
@@ -424,22 +291,8 @@ void MessageHandler_SendManualInitDone(void)
 ***********************************************************************************/
 void MessageHandler_SendSystemStarted(void)
 {
-    /* Create structure */
-    tsMessageFrame sMsgFrame;  
-    
-    /* Clear the structures */
-    memset(&sMsgFrame, 0, sizeof(sMsgFrame));
-
-    /* Fill them */
-    sMsgFrame.sPayload.ucCommand = eCmdSet;
-    sMsgFrame.sPayload.ucMsgId = eMsgSystemStarted;
-    sMsgFrame.sHeader.ucMsgType = eTypeRequest;
-
-    /* Fill header and checksum */
-    OS_Communication_CreateMessageFrame(&sMsgFrame);
-
     /* Start to send the packet */
-    OS_Communication_SendMessage(&sMsgFrame);
+    OS_Communication_SendRequestMessage(eMsgSystemStarted, NULL, 0, eCmdSet);
 }
 
 //********************************************************************************
@@ -453,32 +306,20 @@ void MessageHandler_SendSystemStarted(void)
 void MessageHandler_SendNewUserTimerValues(u8 ucStartH, u8 ucStopH, u8 ucStartM, u8 ucStopM, u8 ucTimerIdx)
 {
     /* Create structure */
-    tsMessageFrame sMsgFrame;  
     tMsgUserTimer sMsgUserTimer;
     
     /* Clear the structures */
-    memset(&sMsgFrame, 0, sizeof(sMsgFrame));
     memset(&sMsgUserTimer, 0, sizeof(sMsgUserTimer));
 
     /* Fill them */
-    sMsgFrame.sPayload.ucCommand = eCmdSet;
-    sMsgFrame.sPayload.ucMsgId = eMsgUserTimer;
-    sMsgFrame.sHeader.ucMsgType = eTypeRequest;
-
     sMsgUserTimer.ucStartHour = ucStartH; 
     sMsgUserTimer.ucStopHour = ucStopH;
     sMsgUserTimer.ucStartMin = ucStartM;
     sMsgUserTimer.ucStopMin = ucStopM;
     sMsgUserTimer.b7TimerIdx = ucTimerIdx;
 
-    /* Save the message in frame */
-    memcpy(&sMsgFrame.sPayload.ucData[0], &sMsgUserTimer, sizeof(sMsgUserTimer));
-
-    /* Fill header and checksum */
-    OS_Communication_CreateMessageFrame(&sMsgFrame);
-
     /* Start to send the packet */
-    OS_Communication_SendMessage(&sMsgFrame);
+    OS_Communication_SendRequestMessage(eMsgUserTimer, &sMsgUserTimer, sizeof(tMsgUserTimer), eCmdSet);
 }
 
 //********************************************************************************
@@ -493,17 +334,10 @@ void MessageHandler_SendNewUserTimerValues(u8 ucStartH, u8 ucStopH, u8 ucStartM,
 void MessageHandler_SendActualTime(void)
 {
     /* Create structure */
-    tsMessageFrame sMsgFrame;  
     tMsgCurrentTime sMsgTime;
     
     /* Clear the structures */
-    memset(&sMsgFrame, 0, sizeof(sMsgFrame));
     memset(&sMsgTime, 0, sizeof(sMsgTime));
-
-    /* Fill them */
-    sMsgFrame.sPayload.ucCommand = eCmdSet;
-    sMsgFrame.sPayload.ucMsgId = eMsgCurrentTime;
-    sMsgFrame.sHeader.ucMsgType = eTypeRequest;
 
     /* Correct message fill because of packed structure (pointer needs correct alignment ) */
     u8 ucHour = 0xFF;
@@ -516,14 +350,8 @@ void MessageHandler_SendActualTime(void)
     sMsgTime.ucMinutes = ucMinutes;
     sMsgTime.ulTicks = ulTicks;
 
-    /* Save the message in frame */
-    memcpy(&sMsgFrame.sPayload.ucData[0], &sMsgTime, sizeof(tMsgCurrentTime));
-
-    /* Fill header and checksum */
-    OS_Communication_CreateMessageFrame(&sMsgFrame);
-
     /* Start to send the packet */
-    OS_Communication_SendMessage(&sMsgFrame);
+    OS_Communication_SendRequestMessage(eMsgCurrentTime, &sMsgTime, sizeof(tMsgCurrentTime), eCmdSet);
 }
 
 //********************************************************************************
@@ -538,28 +366,17 @@ void MessageHandler_SendActualTime(void)
 void MessageHandler_SendStillAliveMessage(bool bRequest)
 {    
     /* Create structure */
-    tsMessageFrame sMsgFrame;  
     tMsgStillAlive sMsgStillAlive;
         
     /* Clear the structures */
-    memset(&sMsgFrame, 0, sizeof(sMsgFrame));
     memset(&sMsgStillAlive, 0, sizeof(sMsgStillAlive));  
     
     /* Fill them */
-    sMsgFrame.sPayload.ucCommand = eCmdSet;
-    sMsgFrame.sPayload.ucMsgId = eMsgStillAlive;
     sMsgStillAlive.bRequest  = (bRequest == true) ? 0xFF : 0;
     sMsgStillAlive.bResponse = (bRequest == false) ? 0xFF : 0;
-    sMsgFrame.sHeader.ucMsgType = eTypeRequest;
-
-    /* Fill frame payload */
-    memcpy(&sMsgFrame.sPayload.ucData[0], &sMsgStillAlive, sizeof(tMsgStillAlive));
-    
-    /* Fill header and checksum */
-    OS_Communication_CreateMessageFrame(&sMsgFrame);
 
     /* Start to send the packet */
-    OS_Communication_SendMessage(&sMsgFrame);
+    OS_Communication_SendRequestMessage(eMsgStillAlive, &sMsgStillAlive, sizeof(tMsgStillAlive), eCmdSet);
 }
 
 //********************************************************************************
@@ -573,4 +390,17 @@ void MessageHandler_SendStillAliveMessage(bool bRequest)
 void MessageHandler_Init(void)
 {    
     OS_Communication_Init(MessageHandler_HandleMessage);
+}
+
+
+//********************************************************************************
+/*!
+\author     Kraemer E
+\date       12.07.2021
+\brief      Just a wrapper function
+\return     void 
+***********************************************************************************/
+void MessageHandler_HandleSerialCommEvent(void)
+{
+    OS_Communication_HandleSerialCommEvent();
 }

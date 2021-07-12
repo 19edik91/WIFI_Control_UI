@@ -32,22 +32,8 @@
 ***********************************************************************************/
 static void SendUserSettingsDone(void)
 {
-    /* Create structure */
-    tsMessageFrame sMsgFrame;  
-    
-    /* Clear the structures */
-    memset(&sMsgFrame, 0, sizeof(sMsgFrame));
-    
-    /* Fill them */
-    sMsgFrame.sPayload.ucCommand = eCmdSet;
-    sMsgFrame.sPayload.ucMsgId = eMsgInitDone;    
-    sMsgFrame.sHeader.ucMsgType = eTypeRequest;
-
-    /* Fill header and checksum */
-    OS_Communication_CreateMessageFrame(&sMsgFrame);
-    
     /* Start to send the packet */
-    OS_Communication_SendMessage(&sMsgFrame);
+    OS_Communication_SendResponseMessage(eMsgInitDone, NULL, 0, eCmdSet);
 }
 
 /****************************************** External visible functiones **********************************/
@@ -108,7 +94,7 @@ teMessageType ReqResMsg_Handler(tsMessageFrame* psMsgFrame)
         case eMsgUserTimer:
         {
             /* Cast payload first */
-            tMsgUserTimer* psMsgUserTimer = (tMsgUserTimer*)psMsgFrame->sPayload.ucData;
+            tMsgUserTimer* psMsgUserTimer = (tMsgUserTimer*)psMsgFrame->sPayload.pucData;
 
             /* Set timer values into an array */
             u8 ucTimeArray[4];
@@ -131,7 +117,7 @@ teMessageType ReqResMsg_Handler(tsMessageFrame* psMsgFrame)
         case eMsgInitOutputStatus:
         {
             /* Cast payload first */
-            tMsgInitOutputState* psMsgInitOutputState = (tMsgInitOutputState*)psMsgFrame->sPayload.ucData;
+            tMsgInitOutputState* psMsgInitOutputState = (tMsgInitOutputState*)psMsgFrame->sPayload.pucData;
 
             Aom_SetSavedUserSettings(psMsgInitOutputState->b3OutputIndex,
                                         psMsgInitOutputState->b7Brightness,
@@ -160,7 +146,7 @@ teMessageType ReqResMsg_Handler(tsMessageFrame* psMsgFrame)
         case eMsgOutputState:
         {
             /* Cast payload */
-            tMsgOutputState* psMsgOutputState = (tMsgOutputState*)psMsgFrame->sPayload.ucData;                        
+            tMsgOutputState* psMsgOutputState = (tMsgOutputState*)psMsgFrame->sPayload.pucData;                        
             Aom_SetNewMeasureValues(psMsgOutputState->ucOutputIndex, psMsgOutputState->ulVoltage, psMsgOutputState->uiCurrent, &psMsgOutputState->siTemperature);
             break;
         }
@@ -168,7 +154,7 @@ teMessageType ReqResMsg_Handler(tsMessageFrame* psMsgFrame)
         case eMsgUpdateOutputStatus:
         {
             /* Cast payload */
-            tMsgUpdateOutputState* psUpdateOutput = (tMsgUpdateOutputState*)psMsgFrame->sPayload.ucData;
+            tMsgUpdateOutputState* psUpdateOutput = (tMsgUpdateOutputState*)psMsgFrame->sPayload.pucData;
             Aom_UpdateOutputStatus(psUpdateOutput->b7Brightness,
                                     psUpdateOutput->b3OutputIndex,
                                     psUpdateOutput->bLedStatus,
@@ -182,7 +168,7 @@ teMessageType ReqResMsg_Handler(tsMessageFrame* psMsgFrame)
         case eMsgStillAlive:
         {
             /* Cast payload */
-            tMsgStillAlive* psStillAlive = (tMsgStillAlive*)psMsgFrame->sPayload.ucData;
+            tMsgStillAlive* psStillAlive = (tMsgStillAlive*)psMsgFrame->sPayload.pucData;
             if(psStillAlive->bRequest == 0xFF && psStillAlive->bResponse == 0x00)
             {
                 MessageHandler_SendStillAliveMessage(false);
