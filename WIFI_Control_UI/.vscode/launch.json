@@ -12,21 +12,21 @@
             "type": "platformio-debug",
             "request": "launch",
             "name": "PIO Debug",
-            "executable": "C:/Users/kraemere/Desktop/Projects/WIFI_Control_UI/WIFI_Control_UI/.pio/build/esp01_1m/firmware.elf",
-            "projectEnvName": "esp01_1m",
+            "executable": "C:/Users/kraemere/Desktop/Projects/WIFI_Control_UI/WIFI_Control_UI/.pio/build/nodemcuv2/firmware.elf",
+            "projectEnvName": "nodemcuv2",
             "toolchainBinDir": "C:/Users/kraemere/.platformio/packages/toolchain-xtensa/bin",
             "internalConsoleOptions": "openOnSessionStart",
             "preLaunchTask": {
                 "type": "PlatformIO",
-                "task": "Pre-Debug (esp01_1m)"
+                "task": "Pre-Debug (nodemcuv2)"
             }
         },
         {
             "type": "platformio-debug",
             "request": "launch",
             "name": "PIO Debug (skip Pre-Debug)",
-            "executable": "C:/Users/kraemere/Desktop/Projects/WIFI_Control_UI/WIFI_Control_UI/.pio/build/esp01_1m/firmware.elf",
-            "projectEnvName": "esp01_1m",
+            "executable": "C:/Users/kraemere/Desktop/Projects/WIFI_Control_UI/WIFI_Control_UI/.pio/build/nodemcuv2/firmware.elf",
+            "projectEnvName": "nodemcuv2",
             "toolchainBinDir": "C:/Users/kraemere/.platformio/packages/toolchain-xtensa/bin",
             "internalConsoleOptions": "openOnSessionStart"
         }
