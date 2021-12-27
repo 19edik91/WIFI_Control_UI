@@ -108,7 +108,7 @@ teMessageType ReqResMsg_Handler(tsMessageFrame* psMsgFrame)
             memcpy(&ulTimeParam2, &ucTimeArray[0], sizeof(ucTimeArray));
 
             /* Post timer values for event handler */
-            OS_EVT_PostEvent(eEvtUserTimerReceived, psMsgUserTimer->b7TimerIdx, ulTimeParam2);
+            OS_EVT_PostEvent(eEvtUserTimerReceived, psMsgUserTimer->ucTimerIdx, ulTimeParam2);
 
             Aom_SettingsMsgReceived(true, false, 0);
             break; 
@@ -119,15 +119,15 @@ teMessageType ReqResMsg_Handler(tsMessageFrame* psMsgFrame)
             /* Cast payload first */
             tMsgInitOutputState* psMsgInitOutputState = (tMsgInitOutputState*)psMsgFrame->sPayload.pucData;
 
-            Aom_SetSavedUserSettings(psMsgInitOutputState->b3OutputIndex,
-                                        psMsgInitOutputState->b7Brightness,
-                                        psMsgInitOutputState->bLedStatus,
-                                        psMsgInitOutputState->bAutomaticModeActive,
-                                        psMsgInitOutputState->bNightModeOnOff,
-                                        psMsgInitOutputState->bMotionDetectionOnOff,
+            Aom_SetSavedUserSettings(psMsgInitOutputState->ucOutputIndex,
+                                        psMsgInitOutputState->ucBrightness,
+                                        psMsgInitOutputState->ucLedStatus,
+                                        psMsgInitOutputState->ucAutomaticModeActive,
+                                        psMsgInitOutputState->ucNightModeOnOff,
+                                        psMsgInitOutputState->ucMotionDetectionOnOff,
                                         psMsgInitOutputState->ucBurnTime);
 
-            Aom_SettingsMsgReceived(false, true, psMsgInitOutputState->b3OutputIndex);
+            Aom_SettingsMsgReceived(false, true, psMsgInitOutputState->ucOutputIndex);
             break;
         }
 
@@ -155,11 +155,11 @@ teMessageType ReqResMsg_Handler(tsMessageFrame* psMsgFrame)
         {
             /* Cast payload */
             tMsgUpdateOutputState* psUpdateOutput = (tMsgUpdateOutputState*)psMsgFrame->sPayload.pucData;
-            Aom_UpdateOutputStatus(psUpdateOutput->b7Brightness,
-                                    psUpdateOutput->b3OutputIndex,
-                                    psUpdateOutput->bLedStatus,
-                                    psUpdateOutput->bNightModeOnOff,
-                                    psUpdateOutput->bMotionDetectionOnOff,
+            Aom_UpdateOutputStatus(psUpdateOutput->ucBrightness,
+                                    psUpdateOutput->ucOutputIndex,
+                                    psUpdateOutput->ucLedStatus,
+                                    psUpdateOutput->ucNightModeOnOff,
+                                    psUpdateOutput->ucMotionDetectionOnOff,
                                     psUpdateOutput->slRemainingBurnTime);
 
             break;

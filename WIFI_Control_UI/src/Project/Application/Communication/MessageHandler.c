@@ -160,15 +160,15 @@ void MessageHandler_SendRequestOutputStatus(u8 ucOutputIndex)
         const tRegulationValues* psRegValues = Aom_GetCustomValue();
 
         /* Put the values into the message */
-        sMsgOutput.b7Brightness = psRegValues->sLedValue[ucOutputIndex].ucPercentValue;
-        sMsgOutput.bLedStatus = psRegValues->sLedValue[ucOutputIndex].bStatus;
-        sMsgOutput.bInitMenuActiveInv = !psRegValues->bMainPageActive;
-        sMsgOutput.bInitMenuActive = psRegValues->bMainPageActive;
-        sMsgOutput.bAutomaticModeActive = psRegValues->bAutomaticModeStatus;
-        sMsgOutput.bMotionDetectionOnOff = psRegValues->bMotionDetectionOnOff;
-        sMsgOutput.bNightModeOnOff = psRegValues->bNightModeOnOff;
+        sMsgOutput.ucBrightness = psRegValues->sLedValue[ucOutputIndex].ucPercentValue;
+        sMsgOutput.ucLedStatus = psRegValues->sLedValue[ucOutputIndex].bStatus;
+        sMsgOutput.ucInitMenuActiveInv = !psRegValues->bMainPageActive;
+        sMsgOutput.ucInitMenuActive = psRegValues->bMainPageActive;
+        sMsgOutput.ucAutomaticModeActive = psRegValues->bAutomaticModeStatus;
+        sMsgOutput.ucMotionDetectionOnOff = psRegValues->bMotionDetectionOnOff;
+        sMsgOutput.ucNightModeOnOff = psRegValues->bNightModeOnOff;
         sMsgOutput.ucBurnTime = psRegValues->ucBurnTime;
-        sMsgOutput.b3OutputIndex = ucOutputIndex;
+        sMsgOutput.ucOutputIndex = ucOutputIndex;
 
         /* Start to send the packet */
         OS_Communication_SendRequestMessage(eMsgRequestOutputStatus, &sMsgOutput, sizeof(tMsgRequestOutputState), eCmdSet);
@@ -242,8 +242,8 @@ void MessageHandler_SendManualInitValue(bool bMaxValue, bool bMinValue, u8 ucOut
     /* Clear the structures */
     memset(&sMsgManualInit, 0, sizeof(sMsgManualInit));
 
-    sMsgManualInit.bSetMinValue = bMinValue;
-    sMsgManualInit.bSetMaxValue = bMaxValue;
+    sMsgManualInit.ucSetMinValue = bMinValue;
+    sMsgManualInit.ucSetMaxValue = bMaxValue;
     sMsgManualInit.ucOutputIndex = ucOutputIdx;
 
     /* Start to send the packet */
@@ -316,7 +316,7 @@ void MessageHandler_SendNewUserTimerValues(u8 ucStartH, u8 ucStopH, u8 ucStartM,
     sMsgUserTimer.ucStopHour = ucStopH;
     sMsgUserTimer.ucStartMin = ucStartM;
     sMsgUserTimer.ucStopMin = ucStopM;
-    sMsgUserTimer.b7TimerIdx = ucTimerIdx;
+    sMsgUserTimer.ucTimerIdx = ucTimerIdx;
 
     /* Start to send the packet */
     OS_Communication_SendRequestMessage(eMsgUserTimer, &sMsgUserTimer, sizeof(tMsgUserTimer), eCmdSet);
