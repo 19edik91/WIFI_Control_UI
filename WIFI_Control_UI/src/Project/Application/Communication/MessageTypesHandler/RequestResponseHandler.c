@@ -93,22 +93,26 @@ teMessageType ReqResMsg_Handler(tsMessageFrame* psMsgFrame)
 
         case eMsgUserTimer:
         {
-            /* Cast payload first */
-            tMsgUserTimer* psMsgUserTimer = (tMsgUserTimer*)psMsgFrame->sPayload.pucData;
+            //Check if any user timer has been set
+            if(psMsgFrame->sPayload.ucPayloadLen > 0)
+            {
+                /* Cast payload first */
+                tMsgUserTimer* psMsgUserTimer = (tMsgUserTimer*)psMsgFrame->sPayload.pucData;
 
-            /* Set timer values into an array */
-            u8 ucTimeArray[4];
-            ucTimeArray[0] = psMsgUserTimer->ucStartHour;
-            ucTimeArray[1] = psMsgUserTimer->ucStartMin;
-            ucTimeArray[2] = psMsgUserTimer->ucStopHour;
-            ucTimeArray[3] = psMsgUserTimer->ucStopMin;
+                /* Set timer values into an array */
+                u8 ucTimeArray[4];
+                ucTimeArray[0] = psMsgUserTimer->ucStartHour;
+                ucTimeArray[1] = psMsgUserTimer->ucStartMin;
+                ucTimeArray[2] = psMsgUserTimer->ucStopHour;
+                ucTimeArray[3] = psMsgUserTimer->ucStopMin;
 
-            /* Copy the array into an u32 parameter */
-            ulEventParam2 ulTimeParam2 = 0;
-            memcpy(&ulTimeParam2, &ucTimeArray[0], sizeof(ucTimeArray));
+                /* Copy the array into an u32 parameter */
+                ulEventParam2 ulTimeParam2 = 0;
+                memcpy(&ulTimeParam2, &ucTimeArray[0], sizeof(ucTimeArray));
 
-            /* Post timer values for event handler */
-            OS_EVT_PostEvent(eEvtUserTimerReceived, psMsgUserTimer->ucTimerIdx, ulTimeParam2);
+                /* Post timer values for event handler */
+                OS_EVT_PostEvent(eEvtUserTimerReceived, psMsgUserTimer->ucTimerIdx, ulTimeParam2);
+            }
 
             Aom_SettingsMsgReceived(true, false, 0);
             break; 

@@ -66,6 +66,7 @@ void MessageHandler_HandleMessage(void* pvMsg)
                 break;
             }
             
+            case eTypeResponse:
             case eTypeRequest:
             {
                 eResponse = ReqResMsg_Handler(psMsgFrame);                
