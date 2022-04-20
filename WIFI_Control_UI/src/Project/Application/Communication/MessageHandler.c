@@ -164,10 +164,6 @@ void MessageHandler_SendRequestOutputStatus(u8 ucOutputIndex)
         sMsgOutput.ucBrightness = psRegValues->sLedValue[ucOutputIndex].ucPercentValue;
         sMsgOutput.ucLedStatus = psRegValues->sLedValue[ucOutputIndex].bStatus;
         sMsgOutput.ucInitMenuActive = psRegValues->bMainPageActive;
-        sMsgOutput.ucAutomaticModeActive = psRegValues->bAutomaticModeStatus;
-        sMsgOutput.ucMotionDetectionOnOff = psRegValues->bMotionDetectionOnOff;
-        sMsgOutput.ucNightModeOnOff = psRegValues->bNightModeOnOff;
-        sMsgOutput.ucBurnTime = psRegValues->ucBurnTime;
         sMsgOutput.ucOutputIndex = ucOutputIndex;
 
         /* Start to send the packet */
@@ -403,4 +399,31 @@ void MessageHandler_Init(void)
 void MessageHandler_HandleSerialCommEvent(void)
 {
     OS_Communication_HandleSerialCommEvent();
+}
+
+
+//********************************************************************************
+/*!
+\author     KraemereE   
+\date       20.04.2022 
+\brief      Sends a message with the change of the night mode status
+\param      none
+\return     none 
+***********************************************************************************/
+void MessageHandler_SendNightModeStatus(void)
+{    
+    /* Create structure */
+    tsMsgEnableNightMode sMsgEnableNightMode;
+        
+    /* Clear the structures */
+    memset(&sMsgEnableNightMode, 0, sizeof(tsMsgEnableNightMode));  
+    
+    /* Get output status values */
+    const tRegulationValues* psRegValues = Aom_GetCustomValue();
+
+    /* Fill them */
+    sMsgEnableNightMode.ucNightModeStatus = psRegValues->bAutomaticModeStatus;
+
+    /* Start to send the packet */
+    OS_Communication_SendRequestMessage(eMsgEnableNightMode, &sMsgEnableNightMode, sizeof(tsMsgEnableNightMode), eCmdSet);
 }

@@ -123,15 +123,18 @@ teMessageType ReqResMsg_Handler(tsMessageFrame* psMsgFrame)
             /* Cast payload first */
             tMsgInitOutputState* psMsgInitOutputState = (tMsgInitOutputState*)psMsgFrame->sPayload.pucData;
 
-            Aom_SetSavedUserSettings(psMsgInitOutputState->ucOutputIndex,
-                                        psMsgInitOutputState->ucBrightness,
-                                        psMsgInitOutputState->ucLedStatus,
-                                        psMsgInitOutputState->ucAutomaticModeActive,
-                                        psMsgInitOutputState->ucNightModeOnOff,
-                                        psMsgInitOutputState->ucMotionDetectionOnOff,
-                                        psMsgInitOutputState->ucBurnTime);
-
-            Aom_SettingsMsgReceived(false, true, psMsgInitOutputState->ucOutputIndex);
+            for(int outputIdx = 0; outputIdx < DRIVE_OUTPUTS; outputIdx++)
+            {
+                Aom_SetSavedUserSettings(psMsgInitOutputState->asOutputs[outputIdx].ucOutputIndex,
+                                            psMsgInitOutputState->asOutputs[outputIdx].ucBrightness,
+                                            psMsgInitOutputState->asOutputs[outputIdx].ucLedStatus,
+                                            psMsgInitOutputState->ucAutomaticModeActive,
+                                            psMsgInitOutputState->ucNightModeOnOff,
+                                            psMsgInitOutputState->ucMotionDetectionOnOff,
+                                            psMsgInitOutputState->ucBurnTime);
+                                            
+                Aom_SettingsMsgReceived(false, true, psMsgInitOutputState->asOutputs[outputIdx].ucOutputIndex);
+            }
             break;
         }
 
