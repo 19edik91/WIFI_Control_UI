@@ -1,0 +1,6 @@
+[submodule "WIFI_Control_UI/src/FW_HAL"]
+	path = WIFI_Control_UI/src/FW_HAL
+	url = git@bitbucket.org:dot-home/fw_hal.git
+[submodule "WIFI_Control_UI/src/BasicOS"]
+	path = WIFI_Control_UI/src/BasicOS
+	url = git@bitbucket.org:dot-home/basicos.git
