@@ -284,7 +284,14 @@ void WifiServerLocal_Handler(void)
 
         /* Check for changes in the page handling and save values in separate structure in AOM */
         bool bValueChanged = Aom_SetMotionDetectionModeValue(psAutomaticVal->bMotionDetectOnOff, psAutomaticVal->ucEndurance);
-        bValueChanged |= Aom_SetNightModeValue(psAutomaticVal->bNightModeOnOff);
+
+        //Check if the night mode status has changed
+        if(Aom_SetNightModeValue(psAutomaticVal->bNightModeOnOff))
+        {
+            MessageHandler_SendNightModeStatus();
+        }
+
+
         bValueChanged |= Aom_SetAutomaticModeValue(psAutomaticVal->bAutomaticOnOff);
 
         u8 ucValueChanged  = Aom_SetCustomValue(psOutputValues->sBrightnessValue[ucOutputIdx].ucSliderValue,

@@ -34,6 +34,7 @@ void MessageHandler_SendSystemStarted(void);
 void MessageHandler_SendNewUserTimerValues(u8 ucStartH, u8 ucStopH, u8 ucStartM, u8 ucStopM, u8 ucTimerIdx);
 void MessageHandler_SendActualTime(void);
 void MessageHandler_SendStillAliveMessage(bool bRequest);
+void MessageHandler_SendNightModeStatus(void);
 
 #ifdef __cplusplus
 }

@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "os_messages.h": "c",
+        "os_faults.h": "c",
+        "basetypes.h": "c"
+    }
+}
