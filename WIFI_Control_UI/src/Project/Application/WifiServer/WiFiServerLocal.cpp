@@ -283,7 +283,10 @@ void WifiServerLocal_Handler(void)
         bool bRootPageActive = (eCurrentPage == ePage_Root) ? true : false;
 
         /* Check for changes in the page handling and save values in separate structure in AOM */
-        bool bValueChanged = Aom_SetMotionDetectionModeValue(psAutomaticVal->bMotionDetectOnOff, psAutomaticVal->ucEndurance);
+        if(Aom_SetMotionDetectionModeValue(psAutomaticVal->bMotionDetectOnOff, psAutomaticVal->ucEndurance))
+        {
+            MessageHandler_SendMotionDetectionModeStatus();
+        }
 
         //Check if the night mode status has changed
         if(Aom_SetNightModeValue(psAutomaticVal->bNightModeOnOff))
@@ -302,7 +305,7 @@ void WifiServerLocal_Handler(void)
                                                 psOutputValues->sBrightnessValue[ucOutputIdx].bOnOff,
                                                 bRootPageActive);
 
-        if(bValueChanged || ucValueChanged != 0xFF)
+        if(ucValueChanged != 0xFF)
         {                   
             /* When the system is in standby mode. Send a wake-up message to UIM*/
             //if(Aom_IsStandbyActive())

@@ -451,5 +451,32 @@ void MessageHandler_SendAutomaticModeStatus(void)
     sMsgEnableAutomaticMode.ucAutomaticModeStatus = psRegValues->bAutomaticModeStatus;
 
     /* Start to send the packet */
-    OS_Communication_SendRequestMessage(eMsgEnableNightMode, &sMsgEnableAutomaticMode, sizeof(tsMsgEnableAutomaticMode), eCmdSet);
+    OS_Communication_SendRequestMessage(eMsgEnableAutomaticMode, &sMsgEnableAutomaticMode, sizeof(tsMsgEnableAutomaticMode), eCmdSet);
+}
+
+//********************************************************************************
+/*!
+\author     KraemereE   
+\date       20.04.2022 
+\brief      Sends a message with the change of the motion detection mode status
+\param      none
+\return     none 
+***********************************************************************************/
+void MessageHandler_SendMotionDetectionModeStatus(void)
+{    
+    /* Create structure */
+    tsMsgEnableMotionDetectStatus sMsgMotionDetect;
+        
+    /* Clear the structures */
+    memset(&sMsgMotionDetect, 0, sizeof(tsMsgEnableMotionDetectStatus));  
+    
+    /* Get output status values */
+    const tRegulationValues* psRegValues = Aom_GetCustomValue();
+
+    /* Fill them */
+    sMsgMotionDetect.ucMotionDetectStatus = psRegValues->bMotionDetectionOnOff;
+    sMsgMotionDetect.ucBurnTime = psRegValues->ucBurnTime;
+
+    /* Start to send the packet */
+    OS_Communication_SendRequestMessage(eMsgEnableMotionDetect, &sMsgMotionDetect, sizeof(tsMsgEnableMotionDetectStatus), eCmdSet);
 }

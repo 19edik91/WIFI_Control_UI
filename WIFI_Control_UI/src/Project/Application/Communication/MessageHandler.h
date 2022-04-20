@@ -36,6 +36,8 @@ void MessageHandler_SendActualTime(void);
 void MessageHandler_SendStillAliveMessage(bool bRequest);
 void MessageHandler_SendNightModeStatus(void);
 void MessageHandler_SendAutomaticModeStatus(void);
+void MessageHandler_SendMotionDetectionModeStatus(void);
+
 
 #ifdef __cplusplus
 }
