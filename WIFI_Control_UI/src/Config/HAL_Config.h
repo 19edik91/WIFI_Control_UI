@@ -33,6 +33,13 @@ extern "C"
 
 
 /****************************************** GPIO-Specific defines ******************************************************/
+#define COUNT_OF_SENSELINES     eInvalidSense
+#define COUNT_OF_OUTPUTS        eInvalidOutput
+#define COUNT_OF_PWM            eInvalidPWM
+#define COUNT_OF_PORT_ISR       eInvalidPort
+#define NUMBER_OF_PORTS          1u
+#define NUMBER_OF_MAX_PORT_PINS  8u
+#define OUTPUT_FAULT_COUNT       10u
 
 
 

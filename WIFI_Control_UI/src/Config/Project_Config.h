@@ -15,13 +15,14 @@
 #define TARGET_SYSTEM_VOLTAGE   12000   //Voltage in milli volt
     
 #ifndef DRIVE_OUTPUTS
-    #define DRIVE_OUTPUTS           3       //Amount of the outputs used in the system
+    #define DRIVE_OUTPUTS           1       //Amount of the outputs used in the system
 #else 
     #error Drive outputs arent set
 #endif
 
 #define PERCENT_LOW              5      //5% is lowest value 
 #define PERCENT_HIGH             100    //100% is highest value
+#define PERCENT_STEPS            5      //Each step is done in 5%
 
 //#define CURRENT_LOW_LIMIT        20  //20mA should be the low limit
 #define CURRENT_MAX_LIMIT        2000   //2000mA is the maximum limit
@@ -72,23 +73,23 @@
    ERROR(   eMuxInvalid                              ,    0xA015      ,       1     ,      1                           )
 
 #define USER_EVENT_LIST \
-    EVT( eEvtAutomaticMode_ResetBurningTimeout )\
-    EVT( eEvtCommTimeout )\
-    EVT( eEvtTimeReceived )\
-    EVT( eEvtStandby )\
-    EVT( eEvtNewRegulationValue )\
-    EVT( eEvtInitRegulationValue )\
-    EVT( eEvtStandby_WakeUpReceived )\
-    EVT( eEvtStandby_RxToggled )\
-    EVT(eEvtManualInitHardware) \
-    EVT(eEvtAutoInitHardware) \
-    EVT(eEvtUserTimerReceived) \
+    eEvtAutomaticMode_ResetBurningTimeout,\
+    eEvtCommTimeout,\
+    eEvtTimeReceived,\
+    eEvtStandby,\
+    eEvtNewRegulationValue,\
+    eEvtInitRegulationValue,\
+    eEvtStandby_WakeUpReceived,\
+    eEvtStandby_RxToggled,\
+    eEvtManualInitHardware,\
+    eEvtAutoInitHardware,\
+    eEvtUserTimerReceived,\
     
 #define USER_EVENTPARAM_LIST \
-    EVTP(eEvtParam_ManualInitSetMinValue)\
-    EVTP(eEvtParam_ManualInitSetMaxValue)\
-    EVTP(eEvtParam_ManualInitDone)\
-    EVTP(eEvtParam_AutoInitDone)\
-    EVTP(eEvtParam_AutoInitStart)\
+    eEvtParam_ManualInitSetMinValue,\
+    eEvtParam_ManualInitSetMaxValue,\
+    eEvtParam_ManualInitDone,\
+    eEvtParam_AutoInitDone,\
+    eEvtParam_AutoInitStart,\
     
 #endif /* PROJECT_CONFIG_H_ */

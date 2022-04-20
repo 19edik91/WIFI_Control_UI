@@ -48,3 +48,9 @@ Thumbs.db
 *.mov
 *.wmv
 
+/WIFI_Control_UI/.pio/build/project.checksum
+/WIFI_Control_UI/.vscode/c_cpp_properties.json
+/WIFI_Control_UI/.vscode/launch.json
+/WIFI_Control_UI/.pio/build/project.checksum
+/WIFI_Control_UI/.vscode/c_cpp_properties.json
+/WIFI_Control_UI/.vscode/launch.json

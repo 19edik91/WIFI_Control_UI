@@ -163,7 +163,6 @@ void MessageHandler_SendRequestOutputStatus(u8 ucOutputIndex)
         /* Put the values into the message */
         sMsgOutput.ucBrightness = psRegValues->sLedValue[ucOutputIndex].ucPercentValue;
         sMsgOutput.ucLedStatus = psRegValues->sLedValue[ucOutputIndex].bStatus;
-        sMsgOutput.ucInitMenuActiveInv = !psRegValues->bMainPageActive;
         sMsgOutput.ucInitMenuActive = psRegValues->bMainPageActive;
         sMsgOutput.ucAutomaticModeActive = psRegValues->bAutomaticModeStatus;
         sMsgOutput.ucMotionDetectionOnOff = psRegValues->bMotionDetectionOnOff;
