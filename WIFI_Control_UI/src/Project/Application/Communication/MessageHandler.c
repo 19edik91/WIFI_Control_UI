@@ -427,3 +427,29 @@ void MessageHandler_SendNightModeStatus(void)
     /* Start to send the packet */
     OS_Communication_SendRequestMessage(eMsgEnableNightMode, &sMsgEnableNightMode, sizeof(tsMsgEnableNightMode), eCmdSet);
 }
+
+//********************************************************************************
+/*!
+\author     KraemereE   
+\date       20.04.2022 
+\brief      Sends a message with the change of the automatic mode status
+\param      none
+\return     none 
+***********************************************************************************/
+void MessageHandler_SendAutomaticModeStatus(void)
+{    
+    /* Create structure */
+    tsMsgEnableAutomaticMode sMsgEnableAutomaticMode;
+        
+    /* Clear the structures */
+    memset(&sMsgEnableAutomaticMode, 0, sizeof(tsMsgEnableAutomaticMode));  
+    
+    /* Get output status values */
+    const tRegulationValues* psRegValues = Aom_GetCustomValue();
+
+    /* Fill them */
+    sMsgEnableAutomaticMode.ucAutomaticModeStatus = psRegValues->bAutomaticModeStatus;
+
+    /* Start to send the packet */
+    OS_Communication_SendRequestMessage(eMsgEnableNightMode, &sMsgEnableAutomaticMode, sizeof(tsMsgEnableAutomaticMode), eCmdSet);
+}

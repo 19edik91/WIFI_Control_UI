@@ -291,8 +291,11 @@ void WifiServerLocal_Handler(void)
             MessageHandler_SendNightModeStatus();
         }
 
-
-        bValueChanged |= Aom_SetAutomaticModeValue(psAutomaticVal->bAutomaticOnOff);
+        //Check if the automatic mode has been enabled or disabled
+        if(Aom_SetAutomaticModeValue(psAutomaticVal->bAutomaticOnOff))
+        {
+            MessageHandler_SendAutomaticModeStatus();
+        }
 
         u8 ucValueChanged  = Aom_SetCustomValue(psOutputValues->sBrightnessValue[ucOutputIdx].ucSliderValue,
                                                 ucOutputIdx,
