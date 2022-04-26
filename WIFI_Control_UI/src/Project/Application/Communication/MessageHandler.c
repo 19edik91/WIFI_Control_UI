@@ -163,7 +163,7 @@ void MessageHandler_SendRequestOutputStatus(u8 ucOutputIndex)
         /* Put the values into the message */
         sMsgOutput.ucBrightness = psRegValues->sLedValue[ucOutputIndex].ucPercentValue;
         sMsgOutput.ucLedStatus = psRegValues->sLedValue[ucOutputIndex].bStatus;
-        sMsgOutput.ucInitMenuActive = psRegValues->bMainPageActive;
+        sMsgOutput.ucInitMenuActive = !psRegValues->bMainPageActive;
         sMsgOutput.ucOutputIndex = ucOutputIndex;
 
         /* Start to send the packet */
