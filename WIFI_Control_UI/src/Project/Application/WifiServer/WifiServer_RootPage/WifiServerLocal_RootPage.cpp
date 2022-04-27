@@ -39,6 +39,7 @@ static tsOutputValues* psOutputValues = nullptr;
 
 static String sValues = "";
 static String sBurningTime = "";
+static String szOutputValues = "";  //String for updating the output values by websockets
 /****************************** local functions ******************************/
 //********************************************************************************
 /*!
@@ -57,6 +58,9 @@ static void PageHandler(void)
     #else
         String sHtmlPage = ROOT_PAGE;
     #endif    
+
+    sHtmlPage.replace("@@MINVAL@@", String(PERCENT_LOW));
+    sHtmlPage.replace("@@STEP@@", String(PERCENT_STEPS));
 
     for(u8 ucOutputIdx = 0; ucOutputIdx < DRIVE_OUTPUTS; ucOutputIdx++)
     {
@@ -258,6 +262,14 @@ void WifiServerLocal_RootPage_SendWebsocketValue(void)
     sBurningTime = "T" + String(slRemain) + "t";
     sBurningTime += "O" + String(slInit) + "o";
     sRootPageState.psWebSocketServer->broadcastTXT(sBurningTime);
+
+    /* Checkout a change of the buttons and slider from another UI or the master */
+    for(u8 ucOutputIdx = 0; ucOutputIdx < DRIVE_OUTPUTS; ucOutputIdx++)
+    {
+        szOutputValues = "B" + String(psOutputValues->sBrightnessValue[ucOutputIdx].ucSliderValue) + "b";
+        szOutputValues += "I" + String(ucOutputIdx + 1) + "i";
+        sRootPageState.psWebSocketServer->broadcastTXT(szOutputValues);         
+    }
 }
 
 //********************************************************************************

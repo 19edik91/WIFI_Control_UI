@@ -166,7 +166,7 @@ const char ROOT_PAGE[] PROGMEM = R"=====(
                 <TABLE>
                     <TR>
                         <TD><p>LED 1</p></TD>
-                        <TD style="width:50%"><input id="slide1" class="slider" type="range" min="5" max="100" step="5" value=@@SLIDERVAL1@@ onchange="sliderChanged(this.value,1)"></input></TD>
+                        <TD style="width:50%"><input id="slide1" class="slider" type="range" min="@@MINVAL@@" max="100" step="@@STEP@@" value=@@SLIDERVAL1@@ onchange="sliderChanged(this.value,1)"></input></TD>
                         <TD><p id='BrightId1'>@@BR1@@</p></TD>
                         <TD> % </TD>
                         <TD>
@@ -177,7 +177,7 @@ const char ROOT_PAGE[] PROGMEM = R"=====(
                     </TR>
                     <TR>
                         <TD><p>LED 2</p></TD>
-                        <TD style="width:50%"><input id="slide2" class="slider" type="range" min="5" max="100" step="5" value=@@SLIDERVAL2@@ onchange="sliderChanged(this.value,2)"></input></TD>
+                        <TD style="width:50%"><input id="slide2" class="slider" type="range" min="@@MINVAL@@" max="100" step="@@STEP@@" value=@@SLIDERVAL2@@ onchange="sliderChanged(this.value,2)"></input></TD>
                         <TD>
                         <p id='BrightId2'>@@BR2@@</p>
                         </TD>
@@ -190,7 +190,7 @@ const char ROOT_PAGE[] PROGMEM = R"=====(
                     </TR>
                     <TR>
                         <TD><p>LED 3</TD>
-                        <TD style="width:50%"><input id="slide3" class="slider" type="range" min="5" max="100" step="5" value=@@SLIDERVAL3@@ onchange="sliderChanged(this.value,3)"></input></TD>
+                        <TD style="width:50%"><input id="slide3" class="slider" type="range" min="@@MINVAL@@" max="100" step="@@STEP@@" value=@@SLIDERVAL3@@ onchange="sliderChanged(this.value,3)"></input></TD>
                         <TD>
                         <p id='BrightId3'>@@BR3@@</p>
                         </TD>
