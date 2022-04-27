@@ -59,6 +59,9 @@ static void PageHandler(void)
         String sHtmlPage = ROOT_PAGE;
     #endif    
 
+    sHtmlPage.replace("@@MINVAL@@", String(PERCENT_LOW));
+    sHtmlPage.replace("@@STEP@@", String(PERCENT_STEPS));
+
     for(u8 ucOutputIdx = 0; ucOutputIdx < DRIVE_OUTPUTS; ucOutputIdx++)
     {
         String szLedStatus = (psOutputValues->sBrightnessValue[ucOutputIdx].bOnOff == true) ? "ON" : "OFF";

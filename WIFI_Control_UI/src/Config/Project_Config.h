@@ -20,9 +20,9 @@
     #error Drive outputs arent set
 #endif
 
-#define PERCENT_LOW              5      //5% is lowest value 
+#define PERCENT_LOW              10      //5% is lowest value 
 #define PERCENT_HIGH             100    //100% is highest value
-#define PERCENT_STEPS            5      //Each step is done in 5%
+#define PERCENT_STEPS            10      //Each step is done in 5%
 
 //#define CURRENT_LOW_LIMIT        20  //20mA should be the low limit
 #define CURRENT_MAX_LIMIT        2000   //2000mA is the maximum limit
