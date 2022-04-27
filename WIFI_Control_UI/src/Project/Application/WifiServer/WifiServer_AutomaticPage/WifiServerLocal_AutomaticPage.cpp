@@ -204,6 +204,7 @@ static void ButtonHandler(void)
     
         //Reload automatic mode side
         PageHandler();
+        return;
     }
 
     if(sButtonName == "previousBtn")
@@ -216,6 +217,7 @@ static void ButtonHandler(void)
     
         //Reload automatic mode side
         PageHandler();
+        return;
     }
 
     if(sButtonName == "HomeBtn" || sButtonName == "HomeBtnAuto")

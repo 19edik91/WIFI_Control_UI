@@ -422,7 +422,7 @@ void MessageHandler_SendNightModeStatus(void)
     const tRegulationValues* psRegValues = Aom_GetCustomValue();
 
     /* Fill them */
-    sMsgEnableNightMode.ucNightModeStatus = psRegValues->bAutomaticModeStatus;
+    sMsgEnableNightMode.ucNightModeStatus = psRegValues->bNightModeOnOff;
 
     /* Start to send the packet */
     OS_Communication_SendRequestMessage(eMsgEnableNightMode, &sMsgEnableNightMode, sizeof(tsMsgEnableNightMode), eCmdSet);
